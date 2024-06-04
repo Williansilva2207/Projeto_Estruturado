@@ -23,6 +23,7 @@ void acaoAdm(Musica musica[], int *qtdMusica);
 void alterarMusicas(Musica musica[], int qtdMusica);
 int binarySearchC(Musica musica[],int cod, int qtdMusica);
 int Remove(int k, int n, int v[]);
+void listarMusica(Musica musica[], int qtdMusica);
 //________________________________________________________________________________________________________________
 int main() {
     Musica musica[TAM_MUSICAS];
@@ -95,7 +96,7 @@ void acaoAdm(Musica musica[], int *qtdMusica) {
     int decisao = -1;
     while (decisao != 0) {
         printf("O que você deseja?\n\nDigite 1: Usuário.\nDigite 2: Adicionar musicas.\nDigite 3: Playlist.\n");
-        printf("Digite 4: Modificar informações da música\nDigite 0: Sair.\n");
+        printf("Digite 4: Modificar informações da música\nDigite 5: Listar músicas.\nDigite 0: Sair.\n");
         scanf("%d", &decisao);
         getchar();
         if (decisao == 1) {
@@ -107,15 +108,16 @@ void acaoAdm(Musica musica[], int *qtdMusica) {
         } else if (decisao == 4) {
             alterarMusicas(musica, *qtdMusica);
         }
+        else if(decisao == 5){
+            listarMusica(musica, *qtdMusica);
+        }
     }
 }
 
 void alterarMusicas(Musica musica[], int qtdMusica) {
     int cod;
     char mod;
-    for (int i = 0; i < qtdMusica; i++) {
-        printf("Título: %sArtista: %sCódigo: %d\n\n", musica[i].titulo, musica[i].artista, musica[i].codigo);
-    }
+
     printf("Digite o código da música que você quer modificar:\n");
     scanf("%d", &cod);
     getchar();
@@ -166,4 +168,12 @@ int Remove(int k, int n, int v[])
    for (int j = k+1; j < n; ++j)  
       v[j-1] = v[j];
    return x;
+}
+
+void listarMusica(Musica musica[], int qtdMusica)
+{
+    for (int i = 0; i < qtdMusica; i++) {
+        printf("Título: %sArtista: %sCódigo: %d\n\n", musica[i].titulo, musica[i].artista, musica[i].codigo);
+    }
+
 }
