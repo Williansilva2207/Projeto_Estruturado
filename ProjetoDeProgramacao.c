@@ -322,5 +322,16 @@ int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios) {
 }
 
 void agirUser(Usuario usuarios[], int *indUser) {
-    // Função a ser implementada
+    int decisao = -1;
+    
+    while(decisao != 0){
+        printf("O que você deseja realizar:\nDigite 1: Listar Seus Dados\nDigite 2: Alterar Nome\nDigite 3: Alterar login\n");
+        printf("Digite 4: Alterar Senha\nDigite 0: Voltar para a tela de login\n");
+        scanf("%d", &decisao);
+        getchar();
+        printf("\n");
+        if(decisao == 1){
+            printf("Nome: %s\nLogin: %s\n", usuarios[*indUser].nome, usuarios[*indUser].login);
+        }
+    }
 }
