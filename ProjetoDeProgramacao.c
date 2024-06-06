@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#define TAM_USER 100
 #define TAM_MAX_PLYLST 200
 #define TAM_NOME 50
 #define TAM_LOGIN 15
@@ -37,7 +37,7 @@ typedef struct {
 void menu1(char *user_Adm);
 int verificarSenha(char senha[]);
 void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posicaoMusica);
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica);
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int posicaoUser);
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica);
 int binarySearchC(Musica musica[], int cod, int qtdMusica, int posicaoMusica);
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica);
@@ -49,9 +49,14 @@ int binarySearchSenha(Usuario usuarios[], char senha[], int qtdUsuarios);
 char cadastrarUsuario(Usuario usuarios[], int *indice);
 int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios);
 void agirUser(Usuario usuarios[], int *indUser);
+void listarUser(Usuario usuarios[], int qtdUser);
+int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser);
+void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser);
+//_________________________________________________________________________________________________________________________________________
+//_________________________________________________________________________________________________________________________________________
 
 int main() {
-    Usuario usuarios[10];
+    Usuario usuarios[TAM_USER];
     
     int indUser = 0;
     Musica musica[TAM_MUSICAS];
@@ -67,13 +72,32 @@ int main() {
     strcpy(musica[0].artista, "Taylor Swift");
     strcpy(musica[1].artista, "Imagine Dragons");
     strcpy(musica[2].artista, "Projeto Sola");
-
+    
+    strcpy(usuarios[0].nome, "Willian");
+    strcpy(usuarios[1].nome, "Vinícius");
+    strcpy(usuarios[2].nome, "Renata");
+    
+    usuarios[0].codigo = 1;
+    usuarios[1].codigo = 2;
+    usuarios[2].codigo = 3;
+    
+    strcpy(usuarios[0].login, "Wil@uni.br");
+    strcpy(usuarios[1].login, "Vin@uni.br");
+    strcpy(usuarios[2].login, "Ren@uni.br");
+    
+    strcpy(usuarios[0].senha, "200887");
+    strcpy(usuarios[1].senha, "872008");
+    strcpy(usuarios[2].senha, "208708");
+    
+    
     char login[TAM_LOGIN];
     char senhaUsuario[TAM_SENHA];
     char senha[10] = {'m', '@', 's', 't', '3', 'r', '2', '0', '2', '4'};
     char user_Adm = 'b';
     int qtdMusica = 3;  
     int posicaoMusica = 2;
+    int qtdUser = 3;
+    int posicaoUser = 2;
 
     while (user_Adm == '1' || user_Adm == '2' || user_Adm == 'b') {
         menu1(&user_Adm);
@@ -91,7 +115,7 @@ int main() {
             if (c == 0) {
                 user_Adm = 'b';
             } else {
-                acaoAdm(musica, &qtdMusica, &posicaoMusica);
+                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, posicaoUser);
             }
         } else {
             break;
@@ -99,13 +123,15 @@ int main() {
     }
     return 0;
 }
-
+//_________________________________________________________________________________________________________________________________________
+//_________________________________________________________________________________________________________________________________________
 void menu1(char *user_Adm) {
     while (*user_Adm != '1' && *user_Adm != '2' && *user_Adm != '0') {
         printf("Você é usuário ou administrador?\n\n");
         printf("Digite 1: Usuário.\nDigite 2: Administrador.\nDigite 0: Sair do app\n");
         scanf(" %c", user_Adm);
         getchar();
+        printf("\n");
     }
 }
 
@@ -124,10 +150,11 @@ int verificarSenha(char senha[]) {
 
 void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posicaoMusica) {
     int quantidade;
+    printf("\n");
     printf("Quantas músicas você quer registrar ?\n");
     scanf("%d", &quantidade);
     getchar();
-    
+    printf("\n");
     for (int i = 0; i < quantidade; i++) {
         musica[*qtdMusica].codigo = getNextCodigo(musica, *qtdMusica);
         printf("Digite o nome da música: ");
@@ -143,15 +170,16 @@ void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posica
     *retornar = -1;
 }
 
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica) {
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int posicaoUser) {
     int decisao = -1;
     while (decisao != 0) {
-        printf("O que você deseja?\n\nDigite 1: Usuário.\nDigite 2: Adicionar musicas.\nDigite 3: Playlist.\n");
-        printf("Digite 4: Modificar informações da música\nDigite 5: Listar músicas.\nDigite 0: Sair.\n");
+        printf("O que você deseja?\n\nDigite 1: Listar Usuários.\nDigite 2: Adicionar musicas.\nDigite 3: Playlist.\n");
+        printf("Digite 4: Modificar informações da música\nDigite 5: Listar músicas.\nDigite 6: Pesquisar Usuários\nDigite 0: Sair.\n");
         scanf("%d", &decisao);
         getchar();
+        printf("\n");
         if (decisao == 1) {
-            
+            listarUser(usuarios, qtdUser);    
         } else if (decisao == 2) {
             adicionarMusica(musica, &decisao, qtdMusica, posicaoMusica);
         } else if (decisao == 3) {
@@ -160,6 +188,9 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica) {
             alterarMusicas(musica, qtdMusica, posicaoMusica);
         } else if (decisao == 5) {
             listarMusica(musica, *qtdMusica);
+        }
+        else if (decisao == 6) {
+            pesquisarUser(usuarios,  qtdUser, posicaoUser);
         }
     }
 }
@@ -223,6 +254,7 @@ void listarMusica(Musica musica[], int qtdMusica) {
     for (int i = 0; i < qtdMusica; i++) {
         printf("Código: %d, Título: %s, Artista: %s\n", musica[i].codigo, musica[i].titulo, musica[i].artista);
     }
+    printf("\n");
 }
 
 int getNextCodigo(Musica musica[], int qtdMusica) {
@@ -235,6 +267,50 @@ int getNextCodigo(Musica musica[], int qtdMusica) {
     return maxCodigo + 1;
 }
 
+void listarUser(Usuario usuarios[], int qtdUser)
+{
+    printf("\n");
+    for(int i = 0; i < qtdUser; i++){
+        printf("Nome: %s, Login: %s;", usuarios[i].nome, usuarios[i].login);
+        printf("\n");
+    }
+    printf("\n");
+}
+void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser){
+    int cod;
+    printf("Coloque o código do usuário:\n");
+    scanf("%d", &cod);
+    getchar();
+    int c = binarySearchUser(usuarios, cod, posicaoUser);
+    if(c!=-1){
+        printf("\nNome: %s\n", usuarios[c].nome);
+        printf("Login: %s\n", usuarios[c].login);
+        printf("\n");
+    }
+    else{
+        printf("\nUsuário não encontrado.\n");
+    }
+    
+}
+int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser){
+    int beggin = 0;
+    int end = posicaoUser;
+    while(beggin <= end){
+        int indice = (beggin+end)/2;
+        if(usuarios[indice].codigo == cod){
+            return indice;
+        }
+        else if(usuarios[indice].codigo <= cod){
+            beggin = indice + 1;
+        }
+        else{
+            end = indice - 1;
+        }
+    }
+    return -1;
+}
+//_________________________________________________________________________________________________________________________________________
+//_________________________________________________________________________________________________________________________________________
 int logar(Usuario usuarios[], char login[], char senhaUsuario[], int *indUser) {
     printf("Digite seu login: ");
     fgets(login, TAM_LOGIN, stdin);
