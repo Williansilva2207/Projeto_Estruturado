@@ -43,22 +43,22 @@ int binarySearchC(Musica musica[], int cod, int qtdMusica, int posicaoMusica);
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica);
 void listarMusica(Musica musica[], int qtdMusica);
 int getNextCodigo(Musica musica[], int qtdMusica);
-int logar(Usuario usuarios[], char login[], char senhaUsuario[], int *indUser);
-int binarySearchLogin(Usuario usuarios[], char login[], int qtdUsuarios);
-int binarySearchSenha(Usuario usuarios[], char senha[], int qtdUsuarios);
+int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser);
+int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser);
 char cadastrarUsuario(Usuario usuarios[], int *indice);
 int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios);
 void agirUser(Usuario usuarios[], int *indUser);
 void listarUser(Usuario usuarios[], int qtdUser);
 int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser);
 void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser);
+void orndenarContas(Usuario usuarios[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
 int main() {
     Usuario usuarios[TAM_USER];
     
-    int indUser = 0;
+    
     Musica musica[TAM_MUSICAS];
     
     strcpy(musica[0].titulo, "Love");
@@ -81,9 +81,9 @@ int main() {
     usuarios[1].codigo = 2;
     usuarios[2].codigo = 3;
     
-    strcpy(usuarios[0].login, "Wil@uni.br");
-    strcpy(usuarios[1].login, "Vin@uni.br");
-    strcpy(usuarios[2].login, "Ren@uni.br");
+    strcpy(usuarios[0].login, "wil@uni.br");
+    strcpy(usuarios[1].login, "vin@uni.br");
+    strcpy(usuarios[2].login, "ren@uni.br");
     
     strcpy(usuarios[0].senha, "200887");
     strcpy(usuarios[1].senha, "872008");
@@ -104,7 +104,7 @@ int main() {
 
         if (user_Adm == '1') {
             printf("Bem vindo Usuário.\n");
-            int c = logar(usuarios, login, senhaUsuario, &indUser);
+            int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser);
             if(c == 0){
                 user_Adm = 'b';
             }
@@ -311,7 +311,8 @@ int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser){
 }
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
-int logar(Usuario usuarios[], char login[], char senhaUsuario[], int *indUser) {
+int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser){
+    orndenarContas(usuarios, qtdUser);
     printf("Digite seu login: ");
     fgets(login, TAM_LOGIN, stdin);
     login[strcspn(login, "\n")] = '\0';  
@@ -319,95 +320,51 @@ int logar(Usuario usuarios[], char login[], char senhaUsuario[], int *indUser) {
     fgets(senhaUsuario, TAM_SENHA, stdin);
     senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';  
 
-    int index = binarySearchLogin(usuarios, login, *indUser);
-    if (index != -1) {
-        int senhaIndex = binarySearchSenha(usuarios, senhaUsuario, *indUser);
-        if (senhaIndex != -1 && senhaIndex == index) {
-            printf("Login bem-sucedido!\n");
-            return 1;
-        }
-    }
-    printf("Login ou senha incorretos.\n");
-    return 0;
-}
-
-int binarySearchLogin(Usuario usuarios[], char login[], int qtdUsuarios) {
-    int beggin = 0;
-    int end = qtdUsuarios - 1;
-
-    while (beggin <= end) {
-        int indice = (beggin + end) / 2;
-        int comparacao = strcmp(usuarios[indice].login, login);
-        
-        if (comparacao == 0) {
-            return indice; 
-        } else if (comparacao < 0) {
-            beggin = indice + 1; 
-        } else {
-            end = indice - 1; 
-        }
-    }
-
-    return -1; 
-}
-
-int binarySearchSenha(Usuario usuarios[], char senha[], int qtdUsuarios) {
-    int beggin = 0;
-    int end = qtdUsuarios - 1;
-
-    while (beggin <= end) {
-        int indice = (beggin + end) / 2;
-        int comparacao = strcmp(usuarios[indice].senha, senha);
-        
-        if (comparacao == 0) {
-            return indice; 
-        } else if (comparacao < 0) {
-            beggin = indice + 1; 
-        } else {
-            end = indice - 1; 
-        }
-    }
-    return -1; 
-}
-char cadastrarUsuario(Usuario usuarios[], int *indice) {
-    Usuario usuario;
-    usuario.codigo = getNextCodigoUsuario(usuarios, *indice);
-    printf("Digite o nome do usuário: ");
-    fgets(usuario.nome, TAM_NOME, stdin);
-    usuario.nome[strcspn(usuario.nome, "\n")] = '\0';  
-    printf("Digite o login do usuário: ");
-    fgets(usuario.login, TAM_LOGIN, stdin);
-    usuario.login[strcspn(usuario.login, "\n")] = '\0';  
-    printf("Digite a senha do usuário: ");
-    fgets(usuario.senha, TAM_SENHA, stdin);
-    usuario.senha[strcspn(usuario.senha, "\n")] = '\0';  
-    usuarios[*indice] = usuario;
-    (*indice)++;
-    printf("Usuário cadastrado com sucesso!\n");
-    return 1;
-}
-
-int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios) {
-    int maxCodigo = 0;
-    for (int i = 0; i < qtdUsuarios; i++) {
-        if (usuarios[i].codigo > maxCodigo) {
-            maxCodigo = usuarios[i].codigo;
-        }
-    }
-    return maxCodigo + 1;
-}
-
-void agirUser(Usuario usuarios[], int *indUser) {
-    int decisao = -1;
+    int index = binarySearchLogin(usuarios, login, posicaoUser);
     
-    while(decisao != 0){
-        printf("O que você deseja realizar:\nDigite 1: Listar Seus Dados\nDigite 2: Alterar Nome\nDigite 3: Alterar login\n");
-        printf("Digite 4: Alterar Senha\nDigite 0: Voltar para a tela de login\n");
-        scanf("%d", &decisao);
-        getchar();
+    if (index != -1 && strcmp(usuarios[index].senha, senhaUsuario) == 0) {
+        printf("Login bem-sucedido!\n");
         printf("\n");
-        if(decisao == 1){
-            printf("Nome: %s\nLogin: %s\n", usuarios[*indUser].nome, usuarios[*indUser].login);
+        return index;
+    } else {
+        printf("Login ou senha incorretos.\n");
+        printf("\n");
+        return -1; 
+    }
+}
+
+
+int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser) {
+    int begin = 0;
+    int end = posicaoUser;
+
+    while (begin <= end) {
+        int middle = (begin + end) / 2;
+        int comparacao = strcmp(usuarios[middle].login, login);
+        
+        if (comparacao == 0) {
+            return middle; 
+            
+        } else if (comparacao < 0) {
+            begin = middle + 1; 
+        } else {
+            end = middle - 1; 
+        }
+    }
+
+    return -1; 
+}
+
+void orndenarContas(Usuario usuarios[], int qtdUser){
+    for(int i = 0; i<qtdUser; i++){
+        for(int e = i+1; e < qtdUser; e++){
+            if(strcmp(usuarios[i].login, usuarios[e].login) > 0){
+                Usuario chave = usuarios[e];
+                usuarios[e] = usuarios[i];
+                usuarios[i] = chave;
+                
+            }
         }
     }
 }
+
