@@ -75,6 +75,12 @@ void testar(Usuario usuarios[], char login[], int qtdUser);
 void testarMusica(Musica musica[], int qtdMusica);
 int binarySearchStartMusica(Musica musica[], char name[], int qtdMusica);
 void pesquisarMusica(Musica musica[], int qtdMusica);
+void adicionarMusicasNaPlaylist(Playlist *playlist, int codigos[], int qtd) {
+    playlist->qtdMusicas = qtd;
+    for(int i = 0; i < qtd; i++) {
+        playlist->musicas[i] = codigos[i];
+    }
+}
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -83,6 +89,7 @@ int main() {
     
     int *ptr;
     Musica musica[TAM_MUSICAS];
+    Playlist playlists[TAM_PLAYLIST];
     
     strcpy(musica[0].titulo, "Love");
     strcpy(musica[1].titulo, "Believer");
@@ -112,6 +119,19 @@ int main() {
     strcpy(usuarios[1].senha, "872008");
     strcpy(usuarios[2].senha, "208708");
     
+    strcpy(playlists[0].titulo, "Jazz");
+    strcpy(playlists[1].titulo, "Forró");
+    strcpy(playlists[2].titulo, "Rock");
+    
+    playlists[0].codigo = 1;
+    playlists[1].codigo = 2;
+    playlists[2].codigo = 3;
+    
+    playlists[0].codUsuario = usuarios[0].codigo;
+    playlists[1].codUsuario = usuarios[1].codigo;
+    playlists[2].codUsuario = usuarios[2].codigo;
+    
+
     
     char login[TAM_LOGIN];
     char senhaUsuario[TAM_SENHA];
@@ -890,3 +910,4 @@ void testarMusica(Musica musica[], int qtdMusica){
         }
     }
 }
+
