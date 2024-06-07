@@ -60,6 +60,7 @@ void mudarNome(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser)
 void mudarLogin(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser);
 void mudarSenha(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser);
 void listarUserNomes(Usuario usuarios[], int qtdUser);
+void orndenarNomes(Usuario usuarios[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -295,7 +296,7 @@ int getNextCodigo(Musica musica[], int qtdMusica) {
 
 void listarUser(Usuario usuarios[], int qtdUser)
 {
-    orndenarContas(usuarios, qtdUser);
+    orndenarNomes(usuarios, qtdUser);
     printf("\n");
     for(int i = 0; i < qtdUser; i++){
         printf("Nome: %s, Login: %s; Código: %d", usuarios[i].nome, usuarios[i].login, usuarios[i].codigo);
@@ -393,7 +394,18 @@ int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser) {
 
     return -1; 
 }
-
+void orndenarNomes(Usuario usuarios[], int qtdUser){
+    for(int i = 0; i<qtdUser; i++){
+        for(int e = i+1; e < qtdUser; e++){
+            if(strcmp(usuarios[i].nome, usuarios[e].nome) > 0){
+                Usuario chave = usuarios[e];
+                usuarios[e] = usuarios[i];
+                usuarios[i] = chave;
+                
+            }
+        }
+    }
+}
 void orndenarContas(Usuario usuarios[], int qtdUser){
     for(int i = 0; i<qtdUser; i++){
         for(int e = i+1; e < qtdUser; e++){
@@ -514,6 +526,7 @@ void mudarNome(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser)
     fgets(senhaUsuario, TAM_SENHA, stdin);
     senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';
     if(strcmp(usuarios[indice].senha, senhaUsuario)==0){
+        memset(usuarios[indice].senha, '\0', strlen(usuarios[indice].senha));
         printf("\nPonha o seu novo nome:\n");
         fgets(usuarios[indice].nome, TAM_NOME, stdin);
         usuarios[indice].nome[strcspn(usuarios[indice].nome, "\n")] = '\0';
@@ -561,7 +574,7 @@ void mudarSenha(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser
 }
 void listarUserNomes(Usuario usuarios[], int qtdUser)
 {
-    orndenarContas(usuarios, qtdUser);
+    orndenarNomes(usuarios, qtdUser);
     printf("\n");
     for(int i = 0; i < qtdUser; i++){
         printf("Nome: %s", usuarios[i].nome);
