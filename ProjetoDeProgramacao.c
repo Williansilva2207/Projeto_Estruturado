@@ -205,20 +205,32 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
         scanf("%d", &decisao);
         getchar();
         printf("\n");
-        if (decisao == 1) {
-            listarUser(usuarios, qtdUser);    
-        } else if (decisao == 2) {
-            adicionarMusica(musica, &decisao, qtdMusica, posicaoMusica);
-        } else if (decisao == 3) {
-            
-        } else if (decisao == 4) {
-            alterarMusicas(musica, qtdMusica, posicaoMusica);
-        } else if (decisao == 5) {
-            listarMusica(musica, *qtdMusica);
-        }
-        else if (decisao == 6) {
-            ordenarCodigo(usuarios, qtdUser);
-            pesquisarUser(usuarios, qtdUser);
+        
+        switch (decisao) {
+            case 1:
+                listarUser(usuarios, qtdUser);
+                break;
+            case 2:
+                adicionarMusica(musica, &decisao, qtdMusica, posicaoMusica);
+                break;
+            case 3:
+        
+                break;
+            case 4:
+                alterarMusicas(musica, qtdMusica, posicaoMusica);
+                break;
+            case 5:
+                listarMusica(musica, *qtdMusica);
+                break;
+            case 6:
+                ordenarCodigo(usuarios, qtdUser);
+                pesquisarUser(usuarios, qtdUser);
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
         }
     }
 }
