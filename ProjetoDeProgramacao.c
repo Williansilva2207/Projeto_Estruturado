@@ -105,7 +105,7 @@ int main() {
 
         if (user_Adm == '1') {
             char digiti ;
-            printf("Degite 1: Realizar Loggin\nDigite 2: Realizar Cadastro\n");
+            printf("Degite 1: Realizar Login\nDigite 2: Realizar Cadastro\n");
             scanf("%c", &digiti);
             getchar();
             if(digiti == '1'){
@@ -120,8 +120,10 @@ int main() {
                 }else{
                     
                 }
+            }else{
+                cadastrarUsuario(usuarios, &qtdUser, &posicaoUser);
             }
-        } else if (user_Adm == '2') {
+        }else if (user_Adm == '2') {
             printf("Coloque a senha do adm (ou digite b para voltar): ");
             int c = verificarSenha(senha);
             printf("\n");
