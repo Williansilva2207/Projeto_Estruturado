@@ -53,6 +53,8 @@ int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser);
 void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser);
 void orndenarContas(Usuario usuarios[], int qtdUser);
 char decidir(char digiti,Usuario usuarios[], int *qtdUser, int *posicaoUser);
+void listarDadoUsuario(Usuario usuarios[], int indice);
+char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -105,10 +107,10 @@ int main() {
 
         if (user_Adm == '1') {
             char digiti ;
-            printf("Degite 1: Realizar Login\nDigite 2: Realizar Cadastro\n");
+            printf("Degite 1: Realizar Login\nDigite 2: Realizar Cadastro\nDigite 0: Voltar\n");
             scanf("%c", &digiti);
             getchar();
-            if(digiti == '1'){
+            while(digiti == '1'){
                 int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser);
                 if(c==-1){
                     printf("Deseja realizar cadasto?\nDigite S: Sim\nDigite N: Não\n");
@@ -118,10 +120,13 @@ int main() {
                     user_Adm = decidir(digiti, usuarios, &qtdUser, &posicaoUser);
                     
                 }else{
+                    digiti = acaoUser(usuarios, login, senhaUsuario, qtdUser, posicaoUser, c);
                     
                 }
-            }else{
+            }if(digiti == '2'){
                 cadastrarUsuario(usuarios, &qtdUser, &posicaoUser);
+            }else{
+                user_Adm = 'b';
             }
         }else if (user_Adm == '2') {
             printf("Coloque a senha do adm (ou digite b para voltar): ");
@@ -287,7 +292,7 @@ void listarUser(Usuario usuarios[], int qtdUser)
     orndenarContas(usuarios, qtdUser);
     printf("\n");
     for(int i = 0; i < qtdUser; i++){
-        printf("Nome: %s, Login: %s;", usuarios[i].nome, usuarios[i].login);
+        printf("Nome: %s, Login: %s; Código: %d", usuarios[i].nome, usuarios[i].login, usuarios[i].codigo);
         printf("\n");
     }
     printf("\n");
@@ -436,9 +441,42 @@ void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser)
         }
     }
     if(strcmp(usuarios[*qtdUser].senha, confirmar)==0){
+        for(int i = 0; i<*qtdUser; i++){
+            for(int e = i+1; e<*qtdUser; e++){
+                if(usuarios[i].codigo>usuarios[e].codigo){
+                    Usuario chave = usuarios[e];
+                    usuarios[e] = usuarios[i]; 
+                    usuarios[i] = chave;
+                }
+            }
+        }
+        usuarios[*qtdUser].codigo = usuarios[*qtdUser-1].codigo + 1; 
         (*posicaoUser) += 1;
         (*qtdUser) += 1;
-        
     }
 }    
+char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice){
+    char decisao = '.';
+    
+    
+    while(decisao != '0'){
+        printf("O que você deseja %s?:\n", usuarios[indice].nome);
+        printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
+        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Pesquisar Música\nDigite 0: Para Voltar\n");
+        scanf("%c", &decisao);
+        getchar();
+        if(decisao == '1'){
+            listarDadoUsuario(usuarios, indice);       
+        }
+        
 
+    }
+    return '1';
+}
+        
+void listarDadoUsuario(Usuario usuarios[], int indice){
+    
+    printf("\nNome: %s\n", usuarios[indice].nome);
+    printf("Login: %s\n", usuarios[indice].login);
+    printf("Código: %d\n\n", usuarios[indice].codigo);
+}
