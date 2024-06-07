@@ -37,14 +37,14 @@ typedef struct {
 void menu1(char *user_Adm);
 int verificarSenha(char senha[]);
 void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posicaoMusica);
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int *posicaoUser, char senhaUsuario[]);
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int *posicaoUser, char senhaUsuario[], char login[]);
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica);
 int binarySearchC(Musica musica[], int cod, int qtdMusica, int posicaoMusica);
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica);
 void listarMusica(Musica musica[], int qtdMusica);
 int getNextCodigo(Musica musica[], int qtdMusica);
 int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, Musica musica[], int qtdMusica);
-int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser);
+int binarySearchLogin(Usuario usuarios[], char login[], int qtdUser);
 void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser);
 int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios);
 void agirUser(Usuario usuarios[], int *indUser);
@@ -62,15 +62,16 @@ void mudarSenha(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser
 void listarUserNomes(Usuario usuarios[], int qtdUser);
 void orndenarNomes(Usuario usuarios[], int qtdUser);
 void ordenarMusica(Musica musica[], int qtdMusica);
-int binarySearchNameUser(Usuario usuarios[], char name[], int qtdUser);
-void pesquisarUsuario(Usuario usuarios[], int indice, int qtdUser);
+void pesquisarUsuario(Usuario usuarios[], int qtdUser);
+int binarySearchStart(Usuario usuarios[], char name[], int qtdUser);
 int pesquisarPorParteDoNome(Usuario usuarios[], char name[], int qtdUser);
 int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]);
+void pesquisarLogin(Usuario usuarios[], int qtdUser, char login[]);
 void adicionarPlaylist(Usuario usuarios[], int *qtdUser, int *posicaoUser, Musica musicas[], int qtdMusicas);
 void adicionarMusicaAPlaylist(Playlist *playlist, Musica musicas[], int qtdMusicas, int *qtdMusicasPlaylist);
 void listarMusicasDisponiveis(Musica musicas[], int qtdMusicas);
 void listarPlaylists(Usuario usuarios[], int qtdUser);
- 
+void testar(Usuario usuarios[], char login[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -78,19 +79,19 @@ int main() {
     Usuario usuarios[TAM_USER];
     
     int *ptr;
-    Musica musicas[TAM_MUSICAS];
+    Musica musica[TAM_MUSICAS];
     
-    strcpy(musicas[0].titulo, "Love");
-    strcpy(musicas[1].titulo, "Believer");
-    strcpy(musicas[2].titulo, "Êxodo");
+    strcpy(musica[0].titulo, "Love");
+    strcpy(musica[1].titulo, "Believer");
+    strcpy(musica[2].titulo, "Êxodo");
 
-    musicas[0].codigo = 1;
-    musicas[1].codigo = 2;
-    musicas[2].codigo = 3;
+    musica[0].codigo = 1;
+    musica[1].codigo = 2;
+    musica[2].codigo = 3;
 
-    strcpy(musicas[0].artista, "Taylor Swift");
-    strcpy(musicas[1].artista, "Imagine Dragons");
-    strcpy(musicas[2].artista, "Projeto Sola");
+    strcpy(musica[0].artista, "Taylor Swift");
+    strcpy(musica[1].artista, "Imagine Dragons");
+    strcpy(musica[2].artista, "Projeto Sola");
     
     strcpy(usuarios[0].nome, "Willian");
     strcpy(usuarios[1].nome, "Vinícius");
@@ -127,7 +128,7 @@ int main() {
             scanf("%c", &digiti);
             getchar();
             while(digiti == '1'){
-                int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser, musicas, qtdMusica);
+                int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser, musica, qtdMusica);
                 if(c==-1){
                     printf("Deseja realizar cadasto?\nDigite S: Sim\nDigite N: Não\n");
                     scanf("%c", &digiti);
@@ -136,7 +137,7 @@ int main() {
                     user_Adm = decidir(digiti, usuarios, &qtdUser, &posicaoUser);
                     
                 }else{
-                    digiti = acaoUser(usuarios, login, senhaUsuario, qtdUser, posicaoUser, c, musicas, qtdMusica);
+                    digiti = acaoUser(usuarios, login, senhaUsuario, qtdUser, posicaoUser, c, musica, qtdMusica);
                     
                 }
             }if(digiti == '2'){
@@ -151,7 +152,7 @@ int main() {
             if (c == 0) {
                 user_Adm = 'b';
             } else {
-                acaoAdm(musicas, &qtdMusica, &posicaoMusica, qtdUser, usuarios, &posicaoUser, senhaUsuario);
+                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, &posicaoUser, senhaUsuario, login);
             }
         } else {
             break;
@@ -204,50 +205,6 @@ void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posica
     }
     *posicaoMusica = *qtdMusica - 1;
     *retornar = -1;
-}
-
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int *posicaoUser, char senhaUsuario[]) {
-    int decisao = -1;
-    while (decisao != 0) {
-        printf("O que você deseja?\n\nDigite 1: Listar Usuários.\nDigite 2: Adicionar musicas.\nDigite 3: Adicionar Playlist.\n");
-        printf("Digite 4: Listar Playlists\nDigite 5: Listar músicas.\nDigite 6: Pesquisar Usuários\nDigite 7: Mudar Senha do Usuário\nDigite 8: Alterar Informações da Musica\nDigite 0: Sair.\n");
-        scanf("%d", &decisao);
-        getchar();
-        printf("\n");
-        switch (decisao) {
-            case 1:
-                listarUser(usuarios, qtdUser);
-                break;
-            case 2:
-                adicionarMusica(musica, &decisao, qtdMusica, posicaoMusica);
-                break;
-             case 3:
-                adicionarPlaylist(usuarios, &qtdUser, posicaoUser, musica, *qtdMusica);
-                break;
-            case 4:
-                listarPlaylists(usuarios, qtdUser);
-                break;
-
-            case 5:
-                listarMusica(musica, *qtdMusica);
-                break;
-            case 6:
-                ordenarCodigo(usuarios, qtdUser);
-                pesquisarUser(usuarios, qtdUser);
-                break;
-            case 7:
-                pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
-                break;
-                 case 8:
-                alterarMusicas(musica, qtdMusica, posicaoMusica);
-                break;
-            case 0:
-                printf("Saindo...\n");
-                break;
-            default:
-                printf("Opção inválida.\n");
-        }
-    }
 }
 void adicionarPlaylist(Usuario usuarios[], int *qtdUser, int *posicaoUser, Musica musicas[], int qtdMusicas) {
     if (*qtdUser < TAM_USER) {
@@ -340,6 +297,65 @@ void listarPlaylists(Usuario usuarios[], int qtdUser) {
         }
     }
     printf("\n");
+}
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int *posicaoUser, char senhaUsuario[], char login[]) {
+    int decisao = -1;
+    while (decisao != 0) {
+        printf("O que você deseja?\n\nDigite 1: Listar Usuários.\nDigite 2: Adicionar musicas.\nDigite 3: Adicionar Playlist.\n");
+        printf("Digite 4: Listar Playlists\nDigite 5: Listar músicas.\nDigite 6: Pesquisar Usuários\nDigite 7: Mudar Senha do Usuário\nDigite 8: Alterar Informações da Musica\nDigite 0: Sair.\n");
+        scanf("%d", &decisao);
+        getchar();
+        printf("\n");
+        switch (decisao) {
+            case 1:
+                listarUser(usuarios, qtdUser);
+                break;
+            case 2:
+                adicionarMusica(musica, &decisao, qtdMusica, posicaoMusica);
+                break;
+            case 3:
+                adicionarPlaylist(usuarios, &qtdUser, posicaoUser, musica, *qtdMusica);
+                break;
+                
+            case 4:
+                listarPlaylists(usuarios, qtdUser);
+                break;
+                
+            case 5:
+                listarMusica(musica, *qtdMusica);
+                break;
+            case 6:
+                testar(usuarios, login,qtdUser);
+                break;
+            case 7:
+                pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
+                break;
+            case 8:
+                alterarMusicas(musica, qtdMusica, posicaoMusica);
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    }
+}
+void testar(Usuario usuarios[], char login[], int qtdUser){
+    char p = '.';
+    while(p!='0'){
+        printf("\nDigite 1: Código\nDigite 2: Nome\nDigite 3: Login\nDigite 0: Sair\n");
+        scanf("%c", &p);
+        getchar();
+        if(p == '1'){
+            ordenarCodigo(usuarios, qtdUser);
+            pesquisarUser(usuarios, qtdUser);
+            }else if(p == '2'){
+                pesquisarUsuario(usuarios, qtdUser);
+            }else if(p=='3'){
+                pesquisarLogin(usuarios, qtdUser, login);
+            }
+    }
 }
 int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]){
     int cod;
@@ -509,7 +525,7 @@ int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, in
     fgets(senhaUsuario, TAM_SENHA, stdin);
     senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';  
 
-    int index = binarySearchLogin(usuarios, login, posicaoUser);
+    int index = binarySearchLogin(usuarios, login, qtdUser);
     
     if (index != -1 && strcmp(usuarios[index].senha, senhaUsuario) == 0) {
         printf("Login bem-sucedido!\n");
@@ -522,9 +538,9 @@ int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, in
     }
 }
 
-int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser) {
+int binarySearchLogin(Usuario usuarios[], char login[], int qtdUser) {
     int begin = 0;
-    int end = posicaoUser;
+    int end = qtdUser-1;
 
     while (begin <= end) {
         int middle = (begin + end) / 2;
@@ -655,7 +671,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         }else if(decisao == '5'){
             listarUserNomes(usuarios, qtdUser);
         }else if(decisao =='6'){
-            pesquisarUsuario(usuarios, indice, qtdUser);
+            pesquisarUsuario(usuarios, qtdUser);
         }else if(decisao =='7'){
             listarMusica(musica, qtdMusica);
         }
@@ -734,25 +750,104 @@ void listarUserNomes(Usuario usuarios[], int qtdUser)
     }
     printf("\n");
 }
-void pesquisarUsuario(Usuario usuarios[], int indice, int qtdUser) {
-    char nam[TAM_NOME];
-    printf("Digite o nome do usuário que você quer:\n");
-    fgets(nam, TAM_NOME, stdin);
-    nam[strcspn(nam, "\n")] = '\0';
+int binarySearchStart(Usuario usuarios[], char name[], int qtdUser) {
+    int beggin = 0;
+    int end = qtdUser - 1;
+    while (beggin <= end) {
+        int indice = (beggin + end) / 2;
+        if (strstr(usuarios[indice].nome, name) != NULL) {
+            
+            while (indice > 0 && strstr(usuarios[indice-1].nome, name) != NULL) {
+                indice--;
+            }
+            return indice;
+        }
+        else if (strcmp(usuarios[indice].nome, name) < 0) {
+            beggin = indice + 1;
+        }
+        else {
+            end = indice - 1;
+        }
+    }
+    return -1;
+}
+
+void pesquisarUsuario(Usuario usuarios[], int qtdUser) {
+    char user[TAM_LOGIN];
+    printf("\nPesquise o usuário:\n\n");
+    fgets(user, TAM_LOGIN, stdin);
+    user[strcspn(user, "\n")] = '\0'; // Remove o '\n' do final da string
     orndenarNomes(usuarios, qtdUser);
-    int c = pesquisarPorParteDoNome(usuarios, nam, qtdUser);
+    int c = binarySearchStart(usuarios, user, qtdUser);
     if (c != -1) {
-        printf("Usuário encontrado: %s\n", usuarios[c].nome);
+        
+        int found = 0;
+        for (int i = c; i < qtdUser && strstr(usuarios[i].nome, user) != NULL; i++) {
+            printf("Usuário encontrado: %s\n", usuarios[i].nome);
+            found = 1;
+        }
+        if (!found) {
+            printf("Não há usuário.\n");
+        }
     } else {
         printf("Não há usuário.\n");
     }
 }
+void pesquisarLogin(Usuario usuarios[], int qtdUser, char login[]){
+    printf("Digite o email do usuário:\n");
+    fgets(login, TAM_LOGIN, stdin);
+    login[strcspn(login, "\n")] = '\0';
+    orndenarContas(usuarios, qtdUser);
+    int c = binarySearchLogin(usuarios, login, qtdUser);
+    if(c!=-1){
+        printf("Nome: %s\n", usuarios[c].nome);
+    }
+    else{
+        printf("Usuário não foi encontrado.\n");
+    }
+    
+}
 
-int pesquisarPorParteDoNome(Usuario usuarios[], char name[], int qtdUser) {
-    for (int i = 0; i < qtdUser; i++) {
-        if (strstr(usuarios[i].nome, name) != NULL) {
-            return i; 
+int binarySearchStartMusica(Musica musica[], char name[], int qtdMusica) {
+    int beggin = 0;
+    int end = qtdMusica - 1;
+    while (beggin <= end) {
+        int indice = (beggin + end) / 2;
+        if (strstr(musica[indice].titulo, name) != NULL) {
+            
+            while (indice > 0 && strstr(musica[indice-1].titulo, name) != NULL) {
+                indice--;
+            }
+            return indice;
+        }
+        else if (strcmp(musica[indice].titulo, name) < 0) {
+            beggin = indice + 1;
+        }
+        else {
+            end = indice - 1;
         }
     }
-    return -1; 
+    return -1;
+}
+
+void pesquisarMusica(Musica musica[], int qtdMusica) {
+    char user[TAM_TITULO];
+    printf("\nPesquise o usuário:\n\n");
+    fgets(user, TAM_TITULO, stdin);
+    user[strcspn(user, "\n")] = '\0'; 
+    ordenarMusica(musica, qtdMusica);
+    int c = binarySearchStartMusica(musica, user, qtdMusica);
+    if (c != -1) {
+        
+        int found = 0;
+        for (int i = c; i < qtdMusica && strstr(musica[i].titulo, user) != NULL; i++) {
+            printf("Usuário encontrado: %s\n", musica[i].titulo);
+            found = 1;
+        }
+        if (!found) {
+            printf("Não há usuário.\n");
+        }
+    } else {
+        printf("Não há usuário.\n");
+    }
 }

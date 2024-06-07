@@ -71,6 +71,7 @@ void adicionarPlaylist(Usuario usuarios[], int *qtdUser, int *posicaoUser, Music
 void adicionarMusicaAPlaylist(Playlist *playlist, Musica musicas[], int qtdMusicas, int *qtdMusicasPlaylist);
 void listarMusicasDisponiveis(Musica musicas[], int qtdMusicas);
 void listarPlaylists(Usuario usuarios[], int qtdUser);
+void testar(Usuario usuarios[], char login[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -324,20 +325,7 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 listarMusica(musica, *qtdMusica);
                 break;
             case 6:
-                char p = '.';
-                while(p!='0'){
-                    printf("\nDigite 1: Código\nDigite 2: Nome\nDigite 3: Login\nDigite 0: Sair\n");
-                    scanf("%c", &p);
-                    getchar();
-                    if(p == '1'){
-                        ordenarCodigo(usuarios, qtdUser);
-                        pesquisarUser(usuarios, qtdUser);
-                    }else if(p == '2'){
-                        pesquisarUsuario(usuarios, qtdUser);
-                    }else if(p=='3'){
-                        pesquisarLogin(usuarios, qtdUser, login);
-                    }
-                }
+                testar(usuarios, login,qtdUser);
                 break;
             case 7:
                 pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
@@ -351,6 +339,22 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
             default:
                 printf("Opção inválida.\n");
         }
+    }
+}
+void testar(Usuario usuarios[], char login[], int qtdUser){
+    char p = '.';
+    while(p!='0'){
+        printf("\nDigite 1: Código\nDigite 2: Nome\nDigite 3: Login\nDigite 0: Sair\n");
+        scanf("%c", &p);
+        getchar();
+        if(p == '1'){
+            ordenarCodigo(usuarios, qtdUser);
+            pesquisarUser(usuarios, qtdUser);
+            }else if(p == '2'){
+                pesquisarUsuario(usuarios, qtdUser);
+            }else if(p=='3'){
+                pesquisarLogin(usuarios, qtdUser, login);
+            }
     }
 }
 int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]){
