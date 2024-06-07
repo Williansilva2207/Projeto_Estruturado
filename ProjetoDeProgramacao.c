@@ -226,6 +226,7 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 ordenarCodigo(usuarios, qtdUser);
                 pesquisarUser(usuarios, qtdUser);
                 break;
+                
             case 0:
                 printf("Saindo...\n");
                 break;
