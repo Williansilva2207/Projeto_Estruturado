@@ -56,6 +56,10 @@ char decidir(char digiti,Usuario usuarios[], int *qtdUser, int *posicaoUser);
 void listarDadoUsuario(Usuario usuarios[], int indice);
 char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice);
 void ordenarCodigo(Usuario usuarios[], int qtdUser);
+void mudarNome(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser);
+void mudarLogin(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser);
+void mudarSenha(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser);
+void listarUserNomes(Usuario usuarios[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -475,14 +479,23 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
     
     
     while(decisao != '0'){
-        printf("O que você deseja %s?:\n", usuarios[indice].nome);
+        printf("\nO que você deseja %s?:\n\n", usuarios[indice].nome);
         printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
-        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Pesquisar Música\nDigite 0: Para Voltar\n");
+        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Pesquisar Música\nDigite 0: Para Voltar\n\n");
         scanf("%c", &decisao);
         getchar();
         if(decisao == '1'){
             listarDadoUsuario(usuarios, indice);       
+        }else if(decisao == '2'){
+            mudarNome(usuarios,indice,senhaUsuario, qtdUser);       
+        }else if(decisao == '3'){
+            mudarLogin(usuarios, indice, senhaUsuario, qtdUser);       
+        }else if(decisao == '4'){
+            mudarSenha(usuarios, indice, senhaUsuario, qtdUser);       
+        }else if(decisao == '5'){
+            listarUserNomes(usuarios, qtdUser);
         }
+        
         
 
     }
@@ -495,3 +508,65 @@ void listarDadoUsuario(Usuario usuarios[], int indice){
     printf("Login: %s\n", usuarios[indice].login);
     printf("Código: %d\n\n", usuarios[indice].codigo);
 }
+
+void mudarNome(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser){
+    printf("\n\nConfirme a senha para realizar esta ação:\n");
+    fgets(senhaUsuario, TAM_SENHA, stdin);
+    senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';
+    if(strcmp(usuarios[indice].senha, senhaUsuario)==0){
+        printf("\nPonha o seu novo nome:\n");
+        fgets(usuarios[indice].nome, TAM_NOME, stdin);
+        usuarios[indice].nome[strcspn(usuarios[indice].nome, "\n")] = '\0';
+        orndenarContas(usuarios, qtdUser);
+    }
+    else{
+        printf("\nMudança não permitida!\n");
+    }
+}
+void mudarLogin(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser){
+    printf("\n\nConfirme a senha para realizar esta ação:\n");
+    fgets(senhaUsuario, TAM_SENHA, stdin);
+    senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';
+    if(strcmp(usuarios[indice].senha, senhaUsuario)==0){
+        printf("\nPonha o seu novo login:\n");
+        fgets(usuarios[indice].login, TAM_LOGIN, stdin);
+        usuarios[indice].login[strcspn(usuarios[indice].login, "\n")] = '\0';
+        orndenarContas(usuarios, qtdUser);
+    }
+    else{
+        printf("\nMudança não permitida!\n");
+    }
+}
+void mudarSenha(Usuario usuarios[], int indice, char senhaUsuario[], int qtdUser){
+    printf("\n\nConfirme a senha para realizar esta ação:\n");
+    fgets(senhaUsuario, TAM_SENHA, stdin);
+    senhaUsuario[strcspn(senhaUsuario, "\n")] = '\0';
+    if(strcmp(usuarios[indice].senha, senhaUsuario)==0){
+        printf("\nPonha a nova senha:\n");
+        fgets(usuarios[indice].senha, TAM_SENHA, stdin);
+        usuarios[indice].senha[strcspn(usuarios[indice].senha, "\n")] = '\0';
+        char confirmar[TAM_SENHA];
+        printf("Confirme a senha:\n");
+        fgets(confirmar, TAM_SENHA, stdin);
+        confirmar[strcspn(confirmar, "\n")] = '\0';
+        while(strcmp(usuarios[indice].senha, confirmar)!=0){
+            printf("Ponha a senha correta:\n");
+            fgets(confirmar, TAM_SENHA, stdin);
+            confirmar[strcspn(confirmar, "\n")] = '\0';
+        }
+    }
+    else{
+        printf("\nMudança não permitida!\n");
+    }
+}
+void listarUserNomes(Usuario usuarios[], int qtdUser)
+{
+    orndenarContas(usuarios, qtdUser);
+    printf("\n");
+    for(int i = 0; i < qtdUser; i++){
+        printf("Nome: %s", usuarios[i].nome);
+        printf("\n");
+    }
+    printf("\n");
+}
+
