@@ -37,7 +37,7 @@ typedef struct {
 void menu1(char *user_Adm);
 int verificarSenha(char senha[]);
 void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posicaoMusica);
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int posicaoUser);
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int *posicaoUser);
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica);
 int binarySearchC(Musica musica[], int cod, int qtdMusica, int posicaoMusica);
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica);
@@ -49,12 +49,13 @@ void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser);
 int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios);
 void agirUser(Usuario usuarios[], int *indUser);
 void listarUser(Usuario usuarios[], int qtdUser);
-int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser);
-void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser);
+int binarySearchUser(Usuario usuarios[], int cod, int qtdUser);
+void pesquisarUser(Usuario usuarios[], int qtdUser);
 void orndenarContas(Usuario usuarios[], int qtdUser);
 char decidir(char digiti,Usuario usuarios[], int *qtdUser, int *posicaoUser);
 void listarDadoUsuario(Usuario usuarios[], int indice);
 char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice);
+void ordenarCodigo(Usuario usuarios[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -135,7 +136,7 @@ int main() {
             if (c == 0) {
                 user_Adm = 'b';
             } else {
-                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, posicaoUser);
+                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, &posicaoUser);
             }
         } else {
             break;
@@ -190,7 +191,7 @@ void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posica
     *retornar = -1;
 }
 
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int posicaoUser) {
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int *posicaoUser) {
     int decisao = -1;
     while (decisao != 0) {
         printf("O que você deseja?\n\nDigite 1: Listar Usuários.\nDigite 2: Adicionar musicas.\nDigite 3: Playlist.\n");
@@ -210,7 +211,8 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
             listarMusica(musica, *qtdMusica);
         }
         else if (decisao == 6) {
-            pesquisarUser(usuarios,  qtdUser, posicaoUser);
+            ordenarCodigo(usuarios, qtdUser);
+            pesquisarUser(usuarios, qtdUser);
         }
     }
 }
@@ -297,12 +299,12 @@ void listarUser(Usuario usuarios[], int qtdUser)
     }
     printf("\n");
 }
-void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser){
+void pesquisarUser(Usuario usuarios[], int qtdUser){
     int cod;
     printf("Coloque o código do usuário:\n");
     scanf("%d", &cod);
     getchar();
-    int c = binarySearchUser(usuarios, cod, posicaoUser);
+    int c = binarySearchUser(usuarios, cod, qtdUser);
     if(c!=-1){
         printf("\nNome: %s\n", usuarios[c].nome);
         printf("Login: %s\n", usuarios[c].login);
@@ -313,9 +315,9 @@ void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser){
     }
     
 }
-int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser){
+int binarySearchUser(Usuario usuarios[], int cod, int qtdUser){
     int beggin = 0;
-    int end = posicaoUser;
+    int end = qtdUser-1;
     while(beggin <= end){
         int indice = (beggin+end)/2;
         if(usuarios[indice].codigo == cod){
@@ -329,6 +331,19 @@ int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser){
         }
     }
     return -1;
+}
+void ordenarCodigo(Usuario usuarios[], int qtdUser){
+        
+    for(int i = 0; i<qtdUser; i++){
+        for(int e = i+1; e<qtdUser; e++){
+            if(usuarios[i].codigo>usuarios[e].codigo){
+                Usuario chave = usuarios[e];
+                usuarios[e] = usuarios[i]; 
+                usuarios[i] = chave;
+            }
+        }
+        
+    }
 }
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
