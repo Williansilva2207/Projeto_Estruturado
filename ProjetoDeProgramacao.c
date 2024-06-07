@@ -45,20 +45,21 @@ void listarMusica(Musica musica[], int qtdMusica);
 int getNextCodigo(Musica musica[], int qtdMusica);
 int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser);
 int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser);
-char cadastrarUsuario(Usuario usuarios[], int *indice);
+void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser);
 int getNextCodigoUsuario(Usuario usuarios[], int qtdUsuarios);
 void agirUser(Usuario usuarios[], int *indUser);
 void listarUser(Usuario usuarios[], int qtdUser);
 int binarySearchUser(Usuario usuarios[], int cod, int posicaoUser);
 void pesquisarUser(Usuario usuarios[], int qtdUser, int posicaoUser);
 void orndenarContas(Usuario usuarios[], int qtdUser);
+char decidir(char digiti,Usuario usuarios[], int *qtdUser, int *posicaoUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
 int main() {
     Usuario usuarios[TAM_USER];
     
-    
+    int *ptr;
     Musica musica[TAM_MUSICAS];
     
     strcpy(musica[0].titulo, "Love");
@@ -103,10 +104,22 @@ int main() {
         menu1(&user_Adm);
 
         if (user_Adm == '1') {
-            printf("Bem vindo Usuário.\n");
-            int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser);
-            if(c == 0){
-                user_Adm = 'b';
+            char digiti ;
+            printf("Degite 1: Realizar Loggin\nDigite 2: Realizar Cadastro\n");
+            scanf("%c", &digiti);
+            getchar();
+            if(digiti == '1'){
+                int c = logar(usuarios, login, senhaUsuario, qtdUser, posicaoUser);
+                if(c==-1){
+                    printf("Deseja realizar cadasto?\nDigite S: Sim\nDigite N: Não\n");
+                    scanf("%c", &digiti);
+                    getchar();
+                    printf("\n");
+                    user_Adm = decidir(digiti, usuarios, &qtdUser, &posicaoUser);
+                    
+                }else{
+                    
+                }
             }
         } else if (user_Adm == '2') {
             printf("Coloque a senha do adm (ou digite b para voltar): ");
@@ -269,6 +282,7 @@ int getNextCodigo(Musica musica[], int qtdMusica) {
 
 void listarUser(Usuario usuarios[], int qtdUser)
 {
+    orndenarContas(usuarios, qtdUser);
     printf("\n");
     for(int i = 0; i < qtdUser; i++){
         printf("Nome: %s, Login: %s;", usuarios[i].nome, usuarios[i].login);
@@ -333,7 +347,6 @@ int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, in
     }
 }
 
-
 int binarySearchLogin(Usuario usuarios[], char login[], int posicaoUser) {
     int begin = 0;
     int end = posicaoUser;
@@ -367,4 +380,63 @@ void orndenarContas(Usuario usuarios[], int qtdUser){
         }
     }
 }
+char decidir(char digiti,Usuario usuarios[], int *qtdUser, int *posicaoUser){
+    if(digiti == 'S'){
+        cadastrarUsuario(usuarios, qtdUser, posicaoUser);
+        return 'b';
+    }
+    else if(digiti == 'N'){
+        return 'b';
+    }
+}
+void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser)
+{
+    char confirmar[TAM_SENHA];
+    
+    char quebrar2 = '.';
+    
+    printf("Qual é o seu nome?:\n");
+    fgets(usuarios[*qtdUser].nome, TAM_NOME, stdin);
+    usuarios[*qtdUser].nome[strcspn(usuarios[*qtdUser].nome, "\n")] = '\0';
+    
+    printf("Ponha o seu login?:\n");
+    fgets(usuarios[*qtdUser].login, TAM_LOGIN, stdin);
+    usuarios[*qtdUser].login[strcspn(usuarios[*qtdUser].login, "\n")] = '\0';
+    
+    printf("Ponha a sua senha?:\n");
+    fgets(usuarios[*qtdUser].senha, TAM_SENHA, stdin);
+    usuarios[*qtdUser].senha[strcspn(usuarios[*qtdUser].senha, "\n")] = '\0';
+    
+    printf("Confirme a sua senha?:\n");
+    fgets(confirmar, TAM_SENHA, stdin);
+    confirmar[strcspn(confirmar, "\n")] = '\0';
+    int ctd = 0;
+    
+    while(strcmp(usuarios[*qtdUser].senha,confirmar)!=0  && ctd < 4){
+        
+        printf("Confirme a sua senha?:\n");
+        fgets(confirmar, TAM_SENHA, stdin);
+        confirmar[strcspn(confirmar, "\n")] = '\0';
+        ctd += 1;
+        
+        if(ctd == 3){
+            
+            printf("Não quer retornar em cadastro e tentar uma nova senha?\nDigite S: Sim\nDigite Qualquer Coisa: Não\n");
+            scanf("%c", &quebrar2);
+            getchar();
+            if(quebrar2 == 'S'){
+                ctd+=1;
+                
+            }else{
+                ctd = 0;
+            }
+            
+        }
+    }
+    if(strcmp(usuarios[*qtdUser].senha, confirmar)==0){
+        (*posicaoUser) += 1;
+        (*qtdUser) += 1;
+        
+    }
+}    
 
