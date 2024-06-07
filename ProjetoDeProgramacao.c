@@ -37,7 +37,7 @@ typedef struct {
 void menu1(char *user_Adm);
 int verificarSenha(char senha[]);
 void adicionarMusica(Musica musica[], int *retornar, int *qtdMusica, int *posicaoMusica);
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int *posicaoUser, char senhaUsuario[], char login[]);
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[],int *posicaoUser, char senhaUsuario[], char login[],int *qtdPlaylists, Playlist playlists[]);
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica);
 int binarySearchC(Musica musica[], int cod, int qtdMusica);
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica);
@@ -75,12 +75,7 @@ void testar(Usuario usuarios[], char login[], int qtdUser);
 void testarMusica(Musica musica[], int qtdMusica);
 int binarySearchStartMusica(Musica musica[], char name[], int qtdMusica);
 void pesquisarMusica(Musica musica[], int qtdMusica);
-void adicionarMusicasNaPlaylist(Playlist *playlist, int codigos[], int qtd) {
-    playlist->qtdMusicas = qtd;
-    for(int i = 0; i < qtd; i++) {
-        playlist->musicas[i] = codigos[i];
-    }
-}
+void listarPlaylistsADM(Playlist playlists[], int qtdPlaylist, Usuario usuarios[]);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -132,7 +127,7 @@ int main() {
     playlists[2].codUsuario = usuarios[2].codigo;
     
 
-    
+    int qtdPlaylist = 3;
     char login[TAM_LOGIN];
     char senhaUsuario[TAM_SENHA];
     char senha[10] = {'m', '@', 's', 't', '3', 'r', '2', '0', '2', '4'};
@@ -175,7 +170,7 @@ int main() {
             if (c == 0) {
                 user_Adm = 'b';
             } else {
-                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, &posicaoUser, senhaUsuario, login);
+                acaoAdm(musica, &qtdMusica, &posicaoMusica, qtdUser, usuarios, &posicaoUser, senhaUsuario, login, &qtdPlaylist, playlists);
             }
         } else {
             break;
@@ -321,7 +316,17 @@ void listarPlaylists(Usuario usuarios[], int qtdUser) {
     }
     printf("\n");
 }
-void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int *posicaoUser, char senhaUsuario[], char login[]) {
+void listarPlaylistsADM(Playlist playlists[], int qtdPlaylist, Usuario usuarios[]) {
+    printf("Playlists adicionadas:\n");
+    for (int i = 0; i < qtdPlaylist; i++) {
+        printf("Usuário: %s\n", usuarios[i].nome);
+        printf("Playlist: %s\n", playlists[i].titulo);
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, Usuario usuarios[], int *posicaoUser, char senhaUsuario[], char login[], int *qtdPlaylists, Playlist playlists[]) {
     int decisao = -1;
     while (decisao != 0) {
         printf("O que você deseja?\n\nDigite 1: Listar Usuários.\nDigite 2: Adicionar musicas.\nDigite 3: Adicionar Playlist.\n");
@@ -341,7 +346,7 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 break;
                 
             case 4:
-                listarPlaylists(usuarios, qtdUser);
+                listarPlaylistsADM(playlists, *qtdPlaylists, usuarios);
                 break;
                 
             case 5:
