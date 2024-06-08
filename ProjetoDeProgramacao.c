@@ -76,6 +76,7 @@ void testarMusica(Musica musica[], int qtdMusica);
 int binarySearchStartMusica(Musica musica[], char name[], int qtdMusica);
 void pesquisarMusica(Musica musica[], int qtdMusica);
 void listarPlaylistsADM(Playlist playlists[], int qtdPlaylist, Usuario usuarios[]);
+void pesquisarUsuarioUser(Usuario usuarios[], int qtdUser);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -88,7 +89,7 @@ int main() {
     
     strcpy(musica[0].titulo, "Love");
     strcpy(musica[1].titulo, "Believer");
-    strcpy(musica[2].titulo, "Êxodo");
+    strcpy(musica[2].titulo, "Redenção");
 
     musica[0].codigo = 1;
     musica[1].codigo = 2;
@@ -701,7 +702,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         }else if(decisao == '5'){
             listarUserNomes(usuarios, qtdUser);
         }else if(decisao =='6'){
-            pesquisarUsuario(usuarios, qtdUser);
+            pesquisarUsuarioUser(usuarios, qtdUser);
         }else if(decisao =='7'){
             listarMusica(musica, qtdMusica);
         }
@@ -915,4 +916,25 @@ void testarMusica(Musica musica[], int qtdMusica){
         }
     }
 }
-
+void pesquisarUsuarioUser(Usuario usuarios[], int qtdUser) {
+    char user[TAM_LOGIN];
+    printf("\nPesquise o usuário:\n\n");
+    fgets(user, TAM_LOGIN, stdin);
+    user[strcspn(user, "\n")] = '\0'; // Remove o '\n' do final da string
+    orndenarNomes(usuarios, qtdUser);
+    int c = binarySearchStart(usuarios, user, qtdUser);
+    if (c != -1) {
+        
+        int found = 0;
+        for (int i = c; i < qtdUser && strstr(usuarios[i].nome, user) != NULL; i++) {
+            printf("Usuário encontrado: %s\n", usuarios[i].nome);
+            
+            found = 1;
+        }
+        if (!found) {
+            printf("Não há usuário.\n");
+        }
+    } else {
+        printf("Não há usuário.\n");
+    }
+}
