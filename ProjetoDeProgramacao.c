@@ -77,6 +77,7 @@ int binarySearchStartMusica(Musica musica[], char name[], int qtdMusica);
 void pesquisarMusica(Musica musica[], int qtdMusica);
 void listarPlaylistsADM(Playlist playlists[], int qtdPlaylist, Usuario usuarios[]);
 void pesquisarUsuarioUser(Usuario usuarios[], int qtdUser);
+void ordenarMusicaCodigo(Musica musica[], int qtdMusica);
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 
@@ -544,7 +545,19 @@ void ordenarMusica(Musica musica[], int qtdMusica){
         
     }
 }
-
+void ordenarMusicaCodigo(Musica musica[], int qtdMusica){
+        
+    for(int i = 0; i<qtdMusica; i++){
+        for(int e = i+1; e<qtdMusica; e++){
+            if(musica[i].codigo > musica[e].codigo){
+                Musica chave = musica[e];
+                musica[e] = musica[i]; 
+                musica[i] = chave;
+            }
+        }
+        
+    }
+}
 //_________________________________________________________________________________________________________________________________________
 //_________________________________________________________________________________________________________________________________________
 int logar(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, Musica musica[], int qtdMusica){
@@ -688,7 +701,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
     while(decisao != '0'){
         printf("\nO que você deseja %s?:\n\n", usuarios[indice].nome);
         printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
-        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 0: Para Voltar\n\n");
+        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 8: Pesquisar Música\nDigite 0: Para Voltar\n\n");
         scanf("%c", &decisao);
         getchar();
         if(decisao == '1'){
@@ -705,6 +718,8 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
             pesquisarUsuarioUser(usuarios, qtdUser);
         }else if(decisao =='7'){
             listarMusica(musica, qtdMusica);
+        }else if(decisao == '8'){
+            testarMusica(musica, qtdMusica);
         }
         
         
@@ -900,7 +915,7 @@ void testarMusica(Musica musica[], int qtdMusica){
             printf("Digite o código da música:\n");
             scanf("%d", &cod);
             getchar();
-            ordenarMusica(musica, qtdMusica);
+            ordenarMusicaCodigo(musica, qtdMusica);
             int c =binarySearchC(musica, cod ,qtdMusica);
             if(c!=-1){
                 printf("Título: %s\n", musica[c].titulo);
