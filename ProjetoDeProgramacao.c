@@ -9,7 +9,7 @@
 #define TAM_TITULO 50
 #define TAM_MUSICAS 100
 
-typedef struct  {
+typedef struct {
     int codigo; // autoincremento
     int codUsuario; // o código do usuário que criou a playlist
     char titulo[TAM_TITULO]; // título desta playlist
@@ -710,57 +710,40 @@ void cadastrarUsuario(Usuario usuarios[], int *qtdUser, int *posicaoUser)
         (*qtdUser) += 1;
     }
 }    
-char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice, Musica musica[], int qtdMusica) {
+char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser, int posicaoUser, int indice, Musica musica[], int qtdMusica){
     char decisao = '.';
-
-    while (decisao != '0') {
+    
+    
+    while(decisao != '0'){
         printf("\nO que você deseja %s?:\n\n", usuarios[indice].nome);
         printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
-        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 8: Pesquisar Música\nDigite 9: Adicionar Playlist.\n Digite 10: Para Listar Playlists\nDigite 0: Para Voltar\n\n");
+        printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 8: Pesquisar Música\nDigite 0: Para Voltar\n\n");
         scanf("%c", &decisao);
         getchar();
-        
-        switch (decisao) {
-            case '1':
-                listarDadoUsuario(usuarios, indice);
-                break;
-            case '2':
-                mudarNome(usuarios, indice, senhaUsuario, qtdUser);
-                break;
-            case '3':
-                mudarLogin(usuarios, indice, senhaUsuario, qtdUser);
-                break;
-            case '4':
-                mudarSenha(usuarios, indice, senhaUsuario, qtdUser);
-                break;
-            case '5':
-                listarUserNomes(usuarios, qtdUser);
-                break;
-            case '6':
-                pesquisarUsuarioUser(usuarios, qtdUser);
-                break;
-            case '7':
-                listarMusica(musica, qtdMusica);
-                break;
-            case '8':
-                testarMusica(musica, qtdMusica);
-                break;
-                case '9':
-                adicionarPlaylist(usuarios, &qtdUser, posicaoUser, musica, qtdMusica);
-                break;
-                case '10':
-               listarPlaylists(usuarios, qtdUser);
-                break;
-            case '0':
-                printf("Voltando...\n");
-                break;
-            default:
-                printf("Opção inválida.\n");
+        if(decisao == '1'){
+            listarDadoUsuario(usuarios, indice);       
+        }else if(decisao == '2'){
+            mudarNome(usuarios,indice,senhaUsuario, qtdUser);       
+        }else if(decisao == '3'){
+            mudarLogin(usuarios, indice, senhaUsuario, qtdUser);       
+        }else if(decisao == '4'){
+            mudarSenha(usuarios, indice, senhaUsuario, qtdUser);       
+        }else if(decisao == '5'){
+            listarUserNomes(usuarios, qtdUser);
+        }else if(decisao =='6'){
+            pesquisarUsuarioUser(usuarios, qtdUser);
+        }else if(decisao =='7'){
+            listarMusica(musica, qtdMusica);
+        }else if(decisao == '8'){
+            testarMusica(musica, qtdMusica);
         }
+        
+        
+
     }
     return '1';
 }
-
+        
 void listarDadoUsuario(Usuario usuarios[], int indice){
     
     printf("\nNome: %s\n", usuarios[indice].nome);
@@ -1030,13 +1013,4 @@ void pesquisarArtista(Musica musica[], int qtdMusica) {
     } else {
         printf("Musica não encontrada.\n");
     }
-}
-void listarPlaylists(Playlist playlists[], int qtdPlaylist, Usuario usuarios[]) {
-    printf("Playlists adicionadas:\n");
-    for (int i = 0; i < qtdPlaylist; i++) {
-        printf("Usuário: %s\n", usuarios[i].nome);
-        printf("Playlist: %s\n", playlists[i].titulo);
-        printf("\n");
-    }
-    printf("\n");
 }
