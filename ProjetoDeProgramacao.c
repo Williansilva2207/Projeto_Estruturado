@@ -201,6 +201,63 @@ void menu1(char *user_Adm) {
     }
 }
 
+
+void excluirMusicaPlaylist(Usuario usuarios[], int qtdUser, int indice, Musica musica[], int qtdMusica) {
+    int codigoPlaylist;
+    int i, j;
+
+    printf("Digite o código da playlist da qual deseja excluir uma música: ");
+    scanf("%d", &codigoPlaylist);
+    getchar(); // Limpar o buffer do teclado
+
+    // Verificar se o usuário possui a playlist com o código fornecido
+    int indicePlaylist = -1;
+    for (i = 0; i < usuarios[indice].qtdPlaylists; i++) {
+        if (usuarios[indice].playlists[i].codigo == codigoPlaylist) {
+            indicePlaylist = i;
+            break;
+        }
+    }
+
+    if (indicePlaylist == -1) {
+        printf("Playlist não encontrada.\n");
+        return;
+    }
+
+    printf("Músicas na playlist '%s':\n", usuarios[indice].playlists[indicePlaylist].titulo);
+    for (i = 0; i < usuarios[indice].playlists[indicePlaylist].qtdMusicas; i++) {
+        int codigoMusica = usuarios[indice].playlists[indicePlaylist].musicas[i];
+        printf("%d: %s - %s\n", codigoMusica, musica[binarySearchC(musica, codigoMusica, qtdMusica)].titulo, musica[binarySearchC(musica, codigoMusica, qtdMusica)].artista);
+    }
+
+    int codigoMusicaExcluir;
+    printf("Digite o código da música que deseja excluir: ");
+    scanf("%d", &codigoMusicaExcluir);
+    getchar(); // Limpar o buffer do teclado
+
+    // Verificar se a música está na playlist
+    int indiceMusica = -1;
+    for (j = 0; j < usuarios[indice].playlists[indicePlaylist].qtdMusicas; j++) {
+        if (usuarios[indice].playlists[indicePlaylist].musicas[j] == codigoMusicaExcluir) {
+            indiceMusica = j;
+            break;
+        }
+    }
+
+    if (indiceMusica == -1) {
+        printf("Música não encontrada na playlist.\n");
+        return;
+    }
+
+    // Remover a música da playlist
+    for (j = indiceMusica; j < usuarios[indice].playlists[indicePlaylist].qtdMusicas - 1; j++) {
+        usuarios[indice].playlists[indicePlaylist].musicas[j] = usuarios[indice].playlists[indicePlaylist].musicas[j + 1];
+    }
+    usuarios[indice].playlists[indicePlaylist].qtdMusicas--;
+
+    printf("Música removida com sucesso da playlist.\n");
+}
+
 int verificarSenha(char senha[]) {
     char senha1[TAM_SENHA];
     fgets(senha1, TAM_SENHA, stdin);
@@ -660,7 +717,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         printf("\nO que você deseja %s?:\n\n", usuarios[indice].nome);
         printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
         printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 8: Pesquisar Música\n");
-        printf("Digite 9: Listar todas as suas playlists\nDigite a: Adicionar Playlist\nDigite e: Excluir Playlist\nDigite 0: Para Voltar\n\n");
+        printf("Digite 9: Listar todas as suas playlists\nDigite a: Adicionar Playlist\nDigite e: Excluir Playlist\nDigite f: para excluir uma musica da sua playlist\nDigite 0: Para Voltar\n\n");
         scanf("%c", &decisao);
         getchar();
         
@@ -698,6 +755,10 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         } else if (decisao == 'e') {
             excluirPlaylist(usuarios, &qtdUser, &posicaoUser);
         }
+        else if (decisao == 'f') {
+            excluirMusicaPlaylist(usuarios, qtdUser, indice, musica, qtdMusica);
+}
+
     }
     
     return '1';
