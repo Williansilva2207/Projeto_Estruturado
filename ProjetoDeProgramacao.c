@@ -206,7 +206,7 @@ void menu1(char *user_Adm) {
 void excluirMusicaPlaylist(Usuario usuarios[], int qtdUser, int indice, Musica musica[], int qtdMusica) {
     int codigoPlaylist;
     int i, j;
-
+    ordenarMusicaCodigo(musica, qtdMusica);
     printf("Digite o código da playlist da qual deseja excluir uma música: ");
     scanf("%d", &codigoPlaylist);
     getchar(); // Limpar o buffer do teclado
@@ -364,6 +364,7 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
                 break;
             case 8:
+                ordenarMusicaCodigo(musica, qtdMusica);
                 alterarMusicas(musica, qtdMusica, posicaoMusica);
                 break;
             case 9:
@@ -409,7 +410,7 @@ int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]){
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica) {
     int cod;
     char mod;
-
+    
     printf("Digite o código da música que você quer modificar:\n");
     scanf("%d", &cod);
     getchar();
