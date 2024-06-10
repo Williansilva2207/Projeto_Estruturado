@@ -83,7 +83,6 @@ int binarySearchStartArtista(Musica musica[], char name[], int qtdMusica);
 void pesquisarArtista(Musica musica[], int qtdMusica);
 void aadicionarPlaylist(Usuario usuarios[], int *qtdUser, int *posicaoUser, Musica musicas[], int qtdMusicas);
 void excluirPlaylist(Usuario usuarios[], int *qtdUser, int *posicaoUser);
-void consultarPlaylists(Usuario usuarios[], int qtdUsuarios, int codUsuario, int codPlaylist, char parteTitulo[], int codMusica);
 
 
 
@@ -206,7 +205,7 @@ void menu1(char *user_Adm) {
 void excluirMusicaPlaylist(Usuario usuarios[], int qtdUser, int indice, Musica musica[], int qtdMusica) {
     int codigoPlaylist;
     int i, j;
-    ordenarMusicaCodigo(musica, qtdMusica);
+
     printf("Digite o código da playlist da qual deseja excluir uma música: ");
     scanf("%d", &codigoPlaylist);
     getchar(); // Limpar o buffer do teclado
@@ -364,7 +363,6 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
                 break;
             case 8:
-                ordenarMusicaCodigo(musica, *qtdMusica);
                 alterarMusicas(musica, qtdMusica, posicaoMusica);
                 break;
             case 9:
@@ -410,7 +408,7 @@ int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]){
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica) {
     int cod;
     char mod;
-    
+
     printf("Digite o código da música que você quer modificar:\n");
     scanf("%d", &cod);
     getchar();
@@ -719,7 +717,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         printf("\nO que você deseja %s?:\n\n", usuarios[indice].nome);
         printf("Digite 1: Listar Seus Dados\nDigite 2: Alterar o Nome\nDigite 3: Alterar Login\nDigite 4: Alterar a Senha\n");
         printf("Digite 5: Listar Usuários\nDigite 6: Pesquisar Usuários\nDigite 7: Listar Músicas\nDigite 8: Pesquisar Música\n");
-        printf("Digite 9: Listar todas as suas playlists\nDigite a: Adicionar Playlist\nDigite e: Excluir Playlist\nDigite G: Para Consultar Uma Playlist\nDigite f: para excluir uma musica da sua playlist\nDigite 0: Para Voltar\n\n");
+        printf("Digite 9: Listar todas as suas playlists\nDigite a: Adicionar Playlist\nDigite e: Excluir Playlist\nDigite f: para excluir uma musica da sua playlist\nDigite 0: Para Voltar\n\n");
         scanf("%c", &decisao);
         getchar();
         
@@ -744,7 +742,7 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
             for (i = 0; i < usuarios[indice].qtdPlaylists; i++) {
                 printf("\nPlaylist: %s\n", usuarios[indice].playlists[i].titulo);
                 printf("Código da Playlist: %d\n", usuarios[indice].playlists[i].codigo);
-                printf("Criada por: %s\n", usuarios[binarySearchUser(usuarios, usuarios[indice].playlists[i].codUsuario, qtdUser)].nome);
+                printf("Criada por: Vinicius\n", usuarios[binarySearchUser(usuarios, usuarios[indice].playlists[i].codUsuario, qtdUser)].nome);
                 printf("Músicas:\n");
                 for (int j = 0; j < usuarios[indice].playlists[i].qtdMusicas; j++) {
                     int codigoMusica = usuarios[indice].playlists[i].musicas[j];
@@ -759,8 +757,6 @@ char acaoUser(Usuario usuarios[], char login[], char senhaUsuario[], int qtdUser
         }
         else if (decisao == 'f') {
             excluirMusicaPlaylist(usuarios, qtdUser, indice, musica, qtdMusica);
-} else if (decisao == 'g'){
-      consultarPlaylists(usuarios, qtdUser, usuarios[indice].codigo, -1, "", -1);
 }
 
     }
@@ -1127,48 +1123,5 @@ void pesquisarArtista(Musica musica[], int qtdMusica) {
         }
     } else {
         printf("Musica não encontrada.\n");
-    }
-}
-void consultarPlaylists(Usuario usuarios[], int qtdUsuarios, int codUsuario, int codPlaylist, char parteTitulo[], int codMusica) {
-    int i, j, k, l;
-    for (i = 0; i < qtdUsuarios; i++) {
-        if (usuarios[i].codigo == codUsuario) {
-            printf("Playlists do usuário %s:\n", usuarios[i].nome);
-            for (j = 0; j < usuarios[i].qtdPlaylists; j++) {
-                if (codPlaylist != -1 && usuarios[i].playlists[j].codigo == codPlaylist) {
-                    printf("Código da Playlist: %d\n", usuarios[i].playlists[j].codigo);
-                    printf("Título: %s\n", usuarios[i].playlists[j].titulo);
-                    printf("Criador: %s\n", usuarios[i].nome);
-                    printf("Músicas:\n");
-                    for (k = 0; k < usuarios[i].playlists[j].qtdMusicas; k++) {
-                        printf("\t%d - %s\n", usuarios[i].playlists[j].musicas[k], "Nome da Música"); // Nome da música pode ser obtido a partir do código da música
-                    }
-                }
-                else if (strstr(usuarios[i].playlists[j].titulo, parteTitulo) != NULL) {
-                    printf("Código da Playlist: %d\n", usuarios[i].playlists[j].codigo);
-                    printf("Título: %s\n", usuarios[i].playlists[j].titulo);
-                    printf("Criador: %s\n", usuarios[i].nome);
-                    printf("Músicas:\n");
-                    for (k = 0; k < usuarios[i].playlists[j].qtdMusicas; k++) {
-                        printf("\t%d - %s\n", usuarios[i].playlists[j].musicas[k], "Nome da Música"); // Nome da música pode ser obtido a partir do código da música
-                    }
-                }
-                else {
-                    for (l = 0; l < usuarios[i].playlists[j].qtdMusicas; l++) {
-                        if (usuarios[i].playlists[j].musicas[l] == codMusica) {
-                            printf("Código da Playlist: %d\n", usuarios[i].playlists[j].codigo);
-                            printf("Título: %s\n", usuarios[i].playlists[j].titulo);
-                            printf("Criador: %s\n", usuarios[i].nome);
-                            printf("Músicas:\n");
-                            for (k = 0; k < usuarios[i].playlists[j].qtdMusicas; k++) {
-                                printf("\t%d - %s\n", usuarios[i].playlists[j].musicas[k], "Nome da Música"); // Nome da música pode ser obtido a partir do código da música
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            break;
-        }
     }
 }
