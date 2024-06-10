@@ -364,7 +364,7 @@ void acaoAdm(Musica musica[], int *qtdMusica, int *posicaoMusica, int qtdUser, U
                 pesquisarUserSenha(usuarios, qtdUser, senhaUsuario);
                 break;
             case 8:
-                ordenarMusicaCodigo(musica, qtdMusica);
+                ordenarMusicaCodigo(musica, *qtdMusica);
                 alterarMusicas(musica, qtdMusica, posicaoMusica);
                 break;
             case 9:
