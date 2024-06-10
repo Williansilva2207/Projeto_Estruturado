@@ -408,7 +408,7 @@ int pesquisarUserSenha(Usuario usuarios[], int qtdUser, char senhaUsuario[]){
 void alterarMusicas(Musica musica[], int *qtdMusica, int *posicaoMusica) {
     int cod;
     char mod;
-
+    ordenarMusicaCodigo(musica, *qtdMusica);
     printf("Digite o código da música que você quer modificar:\n");
     scanf("%d", &cod);
     getchar();
@@ -453,6 +453,7 @@ int binarySearchC(Musica musica[], int cod, int qtdMusica) {
 }
 
 void Remove(int c, Musica musica[], int *qtdMusica, int *posicaoMusica) {
+    ordenarMusicaCodigo(musica, *qtdMusica);
     for (int i = c; i < *qtdMusica - 1; i++) {
         musica[i] = musica[i + 1];
     }
